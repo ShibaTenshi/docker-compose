@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+ mysql:
+   container_name: shibaqueue-mysql
+   image: mysql:latest
+   environment:
+     MYSQL_DATABASE: admin
+     MYSQL_ROOT_PASSWORD: admin123
+   ports:
+     - 3306:3306
+   networks:
+     - shibaqueue-network
+
+ api:
+   container_name: shibaqueue-api
+   image: oyashiz/shibaqueue-api
+   expose:
+     - 5041
+   ports:
+     - 5041:5041
+   networks:
+     - shibaqueue-network
+   environment:
+     DATASOURCE_USR: admin
+     DATASOURCE_PASS: admin123
+     DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
+     DRIVER_URL: com.mysql.cj.jdbc.Driver
+   depends_on:
+     - shibaqueue-mysql
+
+networks:
+ shibaqueue-network:
+   driver: bridge
