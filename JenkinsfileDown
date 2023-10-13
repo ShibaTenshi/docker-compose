@@ -8,6 +8,11 @@ pipeline {
                       }
           }
      }
+     stage('Docker prune') {
+                      steps {
+                          sh 'docker system prune -a -f'
+                      }
+          }
      post {
         always {
             cleanWs(cleanWhenNotBuilt: false,

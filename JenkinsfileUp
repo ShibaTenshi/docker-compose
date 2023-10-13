@@ -2,6 +2,11 @@ pipeline {
      agent any
 
      stages {
+          stage('Docker prune') {
+                      steps {
+                          sh 'docker system prune -a -f'
+                      }
+          }
           stage('Docker compose up') {
                       steps {
                           sh 'docker compose up -d'
