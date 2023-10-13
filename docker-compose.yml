@@ -16,8 +16,6 @@ services:
  api:
    container_name: shibaqueue-api
    image: oyashiz/shibaqueue-api
-   expose:
-     - 5041
    ports:
      - 5041:5041
    networks:
@@ -26,7 +24,7 @@ services:
      DATASOURCE_USR: admin
      DATASOURCE_PASS: admin123
      DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
-     DRIVER_URL: com.mysql.cj.jdbc.Driver
+     DRIVER_URL: com.mysql.jdbc.Driver
    depends_on:
      - mysql
 
