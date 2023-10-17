@@ -1,33 +1,47 @@
 version: '3'
 
 services:
+  shibaqueue-loadbalance:
+    image: nginx
+    container_name: shibaqueue-loadbalance
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    ports:
+      - 5031:5031
+      - 5032:5032
+    restart: always
+  
+  shibaqueue-user:
+    image: oyashiz/shibaqueue-user
+    restart: always
+  
+  shibaqueue-station:
+    image: oyashiz/shibaqueue-station
+    restart: always
 
- mysql:
-   container_name: shibaqueue-mysql
-   image: mysql:latest
-   environment:
-     MYSQL_DATABASE: admin
-     MYSQL_ROOT_PASSWORD: admin123
-   ports:
-     - 3306:3306
-   networks:
-     - shibaqueue-network
+  shibaqueue-mysql:
+    container_name: shibaqueue-mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: abc123
+      MYSQL_DATABASE: shibaqueue
+    restart: always
 
- api:
-   container_name: shibaqueue-api
-   image: oyashiz/shibaqueue-api
-   ports:
-     - 5041:5041
-   networks:
-     - shibaqueue-network
-   environment:
-     DATASOURCE_USR: admin
-     DATASOURCE_PASS: admin123
-     DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
-     DRIVER_URL: com.mysql.jdbc.Driver
-   depends_on:
-     - mysql
+  shibaqueue-api:
+    container_name: shibaqueue-api
+    image: oyashiz/shibaqueue-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: abc123
+      WAIT_HOSTS: shibaqueue-mysql:3306
+    restart: always
 
-networks:
- shibaqueue-network:
-   driver: bridge
+  shibaqueue-mail:
+    container_name: shibaqueue-mail
+    image: oyashiz/shibaqueue-mail
+    environment:
+      smtpHost: smtp-relay.brevo.com
+      smtpPassword: xsmtpsib-dc81702369c23acbc16b1c26a49370d2a537d0b1882437c81ca9c530079a5664-180JLhvE9RICfb2T
+      smtpUsername: kittikan06122545@icloud.com
+    restart: always
