@@ -20,30 +20,32 @@ services:
   #   image: oyashiz/shibaqueue-station
   #   restart: always
 
-  # shibaqueue-mysql:
-  #   container_name: shibaqueue-mysql
-  #   image: mysql
-  #   ports:
-  #     - 3306:3306
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: abc123
-  #     MYSQL_DATABASE: shibaqueue
-  #   volumes:
-  #     - shibaqueue-mysql-volume:/var/lib/mysql
-  #   restart: always
-
-  shibaqueue-api:
-    container_name: shibaqueue-api
-    image: oyashiz/shibaqueue-api
+  shibaqueue-mysql:
+    container_name: shibaqueue-mysql
+    image: mysql
+    ports:
+      - 5043:3306
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: abc123
+      MYSQL_ROOT_PASSWORD: abc123
+      MYSQL_DATABASE: shibaqueue
+    volumes:
+      - shibaqueue-mysql-volume:/var/lib/mysql
     restart: always
+
+  # shibaqueue-api:
+  #   container_name: shibaqueue-api
+  #   image: oyashiz/shibaqueue-api
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
+  #     SPRING_DATASOURCE_USERNAME: root
+  #     SPRING_DATASOURCE_PASSWORD: abc123
+  #   restart: always
 
   shibaqueue-mail:
     container_name: shibaqueue-mail
     image: oyashiz/shibaqueue-mail
+    ports:
+      - 5042:5042
     environment:
       smtpHost: smtp-relay.brevo.com
       smtpPassword: xsmtpsib-dc81702369c23acbc16b1c26a49370d2a537d0b1882437c81ca9c530079a5664-180JLhvE9RICfb2T
