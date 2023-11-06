@@ -7,50 +7,65 @@ services:
     volumes:
       - ./conf.d:/etc/nginx/conf.d
     ports:
-      # - 5031:5031
-      # - 5032:5032
-      - 5033:5033
+      - 5031:5031
+      - 5032:5032
     restart: always
   
-  # shibaqueue-user:
-  #   image: oyashiz/shibaqueue-user
-  #   restart: always
+  shibaqueue-user:
+    image: oyashiz/shibaqueue-user
+    restart: always
   
-  # shibaqueue-station:
-  #   image: oyashiz/shibaqueue-station
-  #   restart: always
+  shibaqueue-station:
+    image: oyashiz/shibaqueue-station
+    restart: always
+
+  shibaqueue-admin:
+    image: oyashiz/shibaqueue-admin
+    ports:
+      - 5033:5033
+    restart: always
+
+  shibaqueue-storage:
+    container_name: shibaqueue-storage
+    image: oyashiz/shibaqueue-storage
+    ports:
+      - 5034:5034
+    restart: always
+    volumes:
+      - shibaqueue-storage:/storage
 
   shibaqueue-mysql:
     container_name: shibaqueue-mysql
     image: mysql
-    ports:
-      - 5043:3306
     environment:
       MYSQL_ROOT_PASSWORD: abc123
       MYSQL_DATABASE: shibaqueue
+    ports:
+      - 3306:3306
     volumes:
-      - shibaqueue-mysql-volume:/var/lib/mysql
+      - shibaqueue-mysql:/var/lib/mysql
     restart: always
 
-  # shibaqueue-api:
-  #   container_name: shibaqueue-api
-  #   image: oyashiz/shibaqueue-api
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
-  #     SPRING_DATASOURCE_USERNAME: root
-  #     SPRING_DATASOURCE_PASSWORD: abc123
-  #   restart: always
+  shibaqueue-api:
+    container_name: shibaqueue-api
+    image: oyashiz/shibaqueue-api
+    ports:
+      - 5041:5041
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://shibaqueue-mysql:3306/shibaqueue
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: abc123
+    restart: always
 
   shibaqueue-mail:
     container_name: shibaqueue-mail
     image: oyashiz/shibaqueue-mail
-    ports:
-      - 5042:5042
     environment:
-      smtpHost: smtp-relay.brevo.com
-      smtpPassword: xsmtpsib-dc81702369c23acbc16b1c26a49370d2a537d0b1882437c81ca9c530079a5664-180JLhvE9RICfb2T
-      smtpUsername: kittikan06122545@icloud.com
+      smtpHost: --
+      smtpPassword: --
+      smtpUsername: --
     restart: always
 
 volumes:
-  shibaqueue-mysql-volume:
+  shibaqueue-mysql:
+  shibaqueue-storage:
